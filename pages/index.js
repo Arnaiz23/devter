@@ -4,15 +4,27 @@ import styles from '../styles/Home.module.css'
 
 // * Convertir NextJS en SPA
 import Link from 'next/link'
+import Button from '../components/Button'
+import GitHub from '../components/Button/Icons/GitHub'
+
+import {loginWithGitHub} from '../firebase/client'
+import { useState } from 'react'
 
 // * Ya se vera más adelante
-import { useRouter } from 'next/router'
+// ! import { useRouter } from 'next/router'
 
 export default function Home() {
 
-  const router = useRouter()
-  console.log(router);
-  
+  const [user, setUser] = useState(null)
+
+  const handleClick = () => {
+    loginWithGitHub().then(user => {
+      setUser(user)
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -21,17 +33,21 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          <a href="https://nextjs.org">devter</a>
-          <nav className='nav'>
-            <Link href="/timeline">
-              <a>timeline</a>
-            </Link>
-          </nav>
-        </h1>
-
-      </main>
+      <div className={styles.containerCenter}>
+        <main className={styles.main}>
+          <section>
+            <img src="/BrandTransparentMD.png" alt="Logo" />
+            <h1>Devter</h1>
+            <h2>Talk about development with developers</h2>
+            <div>
+              <Button onClick={handleClick}>
+                <GitHub fill='#fff' width={24} height={24}/>
+                Login with github
+              </Button>
+            </div>
+          </section>
+        </main>
+      </div>
 
       <footer className={styles.footer}>
         <a
