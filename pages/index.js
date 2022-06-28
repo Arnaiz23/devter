@@ -1,28 +1,35 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-
+import Head from "next/head"
+import Image from "next/image"
 // * Convertir NextJS en SPA
-import Link from 'next/link'
-import Button from '../components/Button'
-import GitHub from '../components/Button/Icons/GitHub'
+// import Link from "next/link";
 
-import {loginWithGitHub} from '../firebase/client'
-import { useState } from 'react'
+import { useEffect, useState } from "react"
+
+import styles from "styles/Home.module.css"
+
+import { loginWithGitHub, onAuthStateChangedF } from "../firebase/client"
+
+import Avatar from "components/Avatar"
+import Button from "@c/Button"
+import GitHub from "components/Icons/GitHub"
+import Logo from "components/Icons/Logo"
 
 // * Ya se vera más adelante
 // ! import { useRouter } from 'next/router'
 
 export default function Home() {
+  const [user, setUser] = useState(undefined)
 
-  const [user, setUser] = useState(null)
+  useEffect(() => {
+    onAuthStateChangedF(setUser)
+  }, [])
 
   const handleClick = () => {
-    loginWithGitHub().then(user => {
-      setUser(user)
-    }).catch(err => {
-      console.log(err);
-    })
+    loginWithGitHub()
+      .then(setUser)
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   return (
@@ -36,14 +43,26 @@ export default function Home() {
       <div className={styles.containerCenter}>
         <main className={styles.main}>
           <section>
-            <img src="/BrandTransparentMD.png" alt="Logo" />
+            <Logo width={100} />
             <h1>Devter</h1>
             <h2>Talk about development with developers</h2>
             <div>
-              <Button onClick={handleClick}>
-                <GitHub fill='#fff' width={24} height={24}/>
-                Login with github
-              </Button>
+              {user === null && (
+                <Button onClick={handleClick}>
+                  <GitHub fill="#fff" width={24} height={24} />
+                  Login with github
+                </Button>
+              )}
+              {user && user.avatar && (
+                <div>
+                  <Avatar
+                    src={user.avatar}
+                    alt={user.username}
+                    text={user.username}
+                    withText
+                  />
+                </div>
+              )}
             </div>
           </section>
         </main>
@@ -55,7 +74,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
