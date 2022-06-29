@@ -1,0 +1,46 @@
+.header {
+  height: 49px;
+  position: sticky;
+  border-bottom: 1px solid #ccc;
+  top: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: inherit;
+}
+
+.nav {
+  bottom: 0;
+  border-top: 1px solid #ccc;
+  height: 49px;
+  position: absolute;
+  width: 100%;
+  background-color: inherit;
+}
+
+.main {
+  position: relative;
+}
+
+.article {
+  padding: 10px 15px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  border-bottom: 1px solid #d0e7ff;
+}
+
+.article > div {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.p {
+  line-height: 19px;
+  margin: 0;
+  font-size: 14px;
+}
