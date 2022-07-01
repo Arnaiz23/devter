@@ -4,15 +4,18 @@ import styles from "./style.module.css"
 import homeStyles from "styles/Home.module.css"
 
 import { useEffect, useState } from "react"
+import useUser from "hooks/useUser"
 
 export default function HomePage() {
   const [timeline, setTimeline] = useState([])
+  const user = useUser()
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/statuses/home_timeline")
-      .then((res) => res.json())
-      .then(setTimeline)
-  }, [])
+    user &&
+      fetch("http://localhost:3000/api/statuses/home_timeline")
+        .then((res) => res.json())
+        .then(setTimeline)
+  }, [user])
 
   return (
     <>

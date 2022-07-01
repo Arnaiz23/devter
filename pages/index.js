@@ -3,33 +3,31 @@ import Image from "next/image"
 // * Convertir NextJS en SPA
 // import Link from "next/link";
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 import styles from "styles/Home.module.css"
 
-import { loginWithGitHub, onAuthStateChangedF } from "../firebase/client"
+import { loginWithGitHub } from "../firebase/client"
 
-import Avatar from "components/Avatar"
-import Button from "@c/Button"
+import Button from "components/Button"
 import GitHub from "components/Icons/GitHub"
 import Logo from "components/Icons/Logo"
 
-// * Ya se vera más adelante
-// ! import { useRouter } from 'next/router'
+import { useRouter } from "next/router"
+import useUser, { USER_STATES } from "hooks/useUser"
 
 export default function Home() {
-  const [user, setUser] = useState(undefined)
+  const user = useUser()
+  const router = useRouter()
 
   useEffect(() => {
-    onAuthStateChangedF(setUser)
-  }, [])
+    user && router.replace("/home")
+  }, [user])
 
   const handleClick = () => {
-    loginWithGitHub()
-      .then(setUser)
-      .catch((err) => {
-        console.log(err)
-      })
+    loginWithGitHub().catch((err) => {
+      console.log(err)
+    })
   }
 
   return (
@@ -47,22 +45,13 @@ export default function Home() {
             <h1>Devter</h1>
             <h2>Talk about development with developers</h2>
             <div>
-              {user === null && (
+              {user === USER_STATES.NOT_LOGGED && (
                 <Button onClick={handleClick}>
                   <GitHub fill="#fff" width={24} height={24} />
                   Login with github
                 </Button>
               )}
-              {user && user.avatar && (
-                <div>
-                  <Avatar
-                    src={user.avatar}
-                    alt={user.username}
-                    text={user.username}
-                    withText
-                  />
-                </div>
-              )}
+              {user === USER_STATES.NOT_KNOW && <span>Loading...</span>}
             </div>
           </section>
         </main>

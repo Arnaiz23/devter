@@ -1,7 +1,9 @@
-export default function Button({ children, onClick }) {
+export default function Button({ children, onClick, disabled }) {
   return (
     <>
-      <button onClick={onClick}>{children}</button>
+      <button disabled={disabled} onClick={onClick}>
+        {children}
+      </button>
       <style jsx>{`
         button {
           align-items: center;
@@ -16,6 +18,12 @@ export default function Button({ children, onClick }) {
           gap: 10px;
           padding: 8px 24px;
           transition: opacity 0.3s ease;
+          user-select: none;
+        }
+
+        button[disabled] {
+          opacity: 0.2;
+          pointer-events: none;
         }
 
         button:hover {
