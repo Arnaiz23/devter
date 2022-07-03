@@ -12,7 +12,11 @@ import {
   addDoc,
   Timestamp,
   getDocs,
+  orderBy,
+  query,
 } from "firebase/firestore"
+
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage"
 
 const firebaseConfig = {
   apiKey: "AIzaSyDdD7-nxwimdYRjvViqCrH41EQPfM2WpsI",
@@ -23,6 +27,7 @@ const firebaseConfig = {
   appId: "1:270724186431:web:648f9e5522a5cf1327538a",
   measurementId: "G-WKYKB2DGE4",
 }
+
 const app = firebase.initializeApp(firebaseConfig)
 
 const db = getFirestore(app)
@@ -58,27 +63,36 @@ export const loginWithGitHub = () => {
   })
 }
 
-export const addDevit = ({ avatar, content, userId, userName }) => {
+export const addDevit = ({ avatar, content, userId, userName, img }) => {
   return addDoc(collection(db, "devits"), {
     avatar,
-    userId,
-    userName,
     content,
     createdAt: Timestamp.fromDate(new Date()),
+    img,
     likesCount: 0,
     sharedCount: 0,
+    userId,
+    userName,
   })
 }
 
 export const fetchLatestDevits = () => {
-  return getDocs(collection(db, "devits")).then(({ docs }) => {
+  return getDocs(
+    query(collection(db, "devits"), orderBy("createdAt", "desc"))
+  ).then(({ docs }) => {
     return docs.map((doc) => {
       const data = doc.data()
       const id = doc.id
       const { createdAt } = data
-      const date = new Date(createdAt.seconds * 1000)
-      const normalizeCreatedAt = new Intl.DateTimeFormat("es-ES").format(date)
-      return { ...data, id, createdAt: normalizeCreatedAt }
+
+      return { ...data, id, createdAt: +createdAt.toDate() }
     })
   })
+}
+
+export const uploadImage = (file) => {
+  const storage = getStorage()
+  const refStorage = ref(storage, `images/${file.name}`)
+  const task = uploadBytesResumable(refStorage, file)
+  return task
 }
