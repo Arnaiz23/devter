@@ -1,0 +1,27 @@
+.article {
+  padding: 10px 15px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  border-bottom: 1px solid #d0e7ff;
+}
+
+.article > div {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.p {
+  line-height: 19px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.date {
+  color: #555;
+  font-size: 14px;
+}
