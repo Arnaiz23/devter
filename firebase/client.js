@@ -14,6 +14,7 @@ import {
   getDocs,
   orderBy,
   query,
+  onSnapshot,
 } from "firebase/firestore"
 
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage"
@@ -76,17 +77,27 @@ export const addDevit = ({ avatar, content, userId, userName, img }) => {
   })
 }
 
+const mapDevitFromFirebaseToDevitObject = (doc) => {
+  const data = doc.data()
+  const id = doc.id
+  const { createdAt } = data
+
+  return { ...data, id, createdAt: +createdAt.toDate() }
+}
+
+export const listenLatestDevits = (callback) => {
+  const q = query(collection(db, "devits"), orderBy("createdAt", "desc"))
+  return onSnapshot(q, (querySnapshot) => {
+    const newDevits = querySnapshot.docs.map(mapDevitFromFirebaseToDevitObject)
+    callback(newDevits)
+  })
+}
+
 export const fetchLatestDevits = () => {
   return getDocs(
     query(collection(db, "devits"), orderBy("createdAt", "desc"))
   ).then(({ docs }) => {
-    return docs.map((doc) => {
-      const data = doc.data()
-      const id = doc.id
-      const { createdAt } = data
-
-      return { ...data, id, createdAt: +createdAt.toDate() }
-    })
+    return docs.map(mapDevitFromFirebaseToDevitObject)
   })
 }
 
