@@ -5,7 +5,6 @@ import Create from "components/Icons/Create"
 import Head from "next/head"
 import Link from "next/link"
 import styles from "../home/style.module.css"
-// import { firestore } from "components/../firebase/admin"
 
 export default function DevitPage(props) {
   return (
@@ -73,7 +72,7 @@ export async function getServerSideProps(context) {
   const { params, res } = context
   const { id } = params
 
-  const apiResponse = await fetch(`http://localhost:3000/api/devits/${id}`)
+  const apiResponse = await fetch(`${process.env.API_URL}/devits/${id}`)
   if (apiResponse.ok) {
     const props = await apiResponse.json()
     return { props }
