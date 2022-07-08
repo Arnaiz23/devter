@@ -8,7 +8,6 @@ import styles from "../home/style.module.css"
 // import { firestore } from "components/../firebase/admin"
 
 export default function DevitPage(props) {
-  console.log(props)
   return (
     <>
       <Head>
